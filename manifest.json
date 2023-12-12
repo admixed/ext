@@ -1,17 +1,17 @@
 {
   "version": "3.19.0",
   "key": "ilkggpgmkemaniponkfgnkonpajankkm",
-  "author": "Daniel C. Howe",
+  "author": "Admix",
   "background": {
     "page": "background.html",
-    "persistent":true
+    "persistent": true
   },
   "browser_action": {
     "default_icon": {
       "16": "img/icon_16.png",
       "32": "img/icon-32.png"
     },
-    "default_title": "AdNauseam",
+    "default_title": "Admix",
     "default_popup": "menu.html"
   },
   "commands": {
@@ -83,7 +83,7 @@
   },
   "manifest_version": 2,
   "minimum_chrome_version": "66.0",
-  "name": "AdNauseam",
+  "name": "Admix",
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
@@ -102,7 +102,7 @@
     "<all_urls>",
     "management"
   ],
-  "short_name": "AdNauseam",
+  "short_name": "Admix",
   "storage": {
     "managed_schema": "managed_storage.json"
   },

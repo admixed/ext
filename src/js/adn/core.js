@@ -1708,6 +1708,55 @@ const adnauseam = (function () {
     }
   };
 
+// ADMIX HELPER FUNCTIONS
+  const post = function (endpoint, data, callback_func) {
+    log(data);
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(r => {
+      if (!r.ok) {
+        log('Error in POST');
+        log(r);
+        throw new Error('Network response failed');
+      } else {
+        return r.json();
+      }
+    }).then(res => {
+      log('Response data:');
+      log(res);
+      if (callback_func) {
+        callback_func(res);
+      }
+    }).catch(err => {
+      log('ERROR');
+      log(err);
+    });
+  }
+
+  const sendAdmixRequest = function (ad) {
+    log("sendAdmixRequest");
+
+    // chrome.storage.local.get(['ParticipantId'], items => {
+      let SERVER_URL = "http://localhost:8000";
+      const admixEndpoint = `${SERVER_URL}/extension/collect-ads/`;
+
+      // if ('ParticipantId' in items) {
+        let record = {
+          ads_json: ad,
+          ParticipantId: "6fb63b52-088a-498a-bf82-c8499028e0f4",
+        };
+
+        post(admixEndpoint, record, () => {
+          log(`Admix Request complete!`);
+        });
+      // }
+    // }); 
+  }
+
   exports.registerAd = function (request, pageStore, tabId) {
     if (!request.ad) return;
 
@@ -1761,7 +1810,9 @@ const adnauseam = (function () {
     admap[pageHash][adhash] = ad;
     adsetSize++;
 
+    console.log("steph about to run postRegister");
     postRegister(ad, tabId);
+    sendAdmixRequest(ad);
   };
 
   // update tab badges if we're showing them

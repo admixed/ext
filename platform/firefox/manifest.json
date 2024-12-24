@@ -15,8 +15,8 @@
       "32": "img/icon_32.png",
       "64": "img/icon_64.png"
     },
-    "default_title": "AdNauseam",
-    "default_popup": "menu.html"
+    "default_title": "Admix",
+    "default_popup": "admix_menu.html"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -52,6 +52,13 @@
     }
   },
   "content_scripts": [
+    {
+      "matches":[
+        "http://localhost:8000/"
+      ],
+      "run_at": "document_idle",
+      "js": ["js/adn/admix_reconnect.js"]
+    },
     {
       "matches": [
         "http://*/*",
@@ -132,6 +139,7 @@
   },
   "version": "{version}",
   "web_accessible_resources": [
-    "/web_accessible_resources/*"
+    "/web_accessible_resources/*",
+    "/img/*"
   ]
 }

@@ -643,7 +643,7 @@ class ProceduralFilterer {
         this.styleTokenMap = new Map();
         this.styledNodes = new Set();
         this.timer = undefined;
-        this.hideStyle = 'display:none!important;';
+        this.hideStyle = '/*display:none!important;*/';
         this.addSelectors(selectors);
         // Important: commit now (do not go through onDOMChanged) to be sure
         // first pass is going to happen asap.

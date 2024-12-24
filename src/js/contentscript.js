@@ -470,11 +470,11 @@ vAPI.SafeAnimationFrame = class {
 
 */
 
-vAPI.hideStyle = 'display:none!important;';
+vAPI.hideStyle = '/*display:none!important;*/'; //'display:none!important;';
 
 /* Adn */
 vAPI.notHideStyle = '/*display:none!important;*/'; 
-vAPI.showAdsDebug = false;
+vAPI.showAdsDebug = true; // Admix show ads by default
 vAPI.messaging.send('contentscript', {what:'getShowAdsDebug'}).then(response => {
     vAPI.showAdsDebug = response
 });

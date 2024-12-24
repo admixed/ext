@@ -872,7 +872,7 @@ const onMessage = function(request, sender, callback) {
 
     /* Adn */
     case 'getShowAdsDebug':
-        response = µb.hiddenSettings.showAdsDebug;
+        response = true; //µb.hiddenSettings.showAdsDebug;
         break;
     /* end of Adn */
 

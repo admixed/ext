@@ -161,7 +161,7 @@ const uBOL_processNodes = ( ) => {
     if ( styleSheetTimer !== undefined ) { return; }
     styleSheetTimer = self.requestAnimationFrame(( ) => {
         styleSheetTimer = undefined;
-        uBOL_injectCSS(`${styleSheetSelectors.join(',')}{display:none!important;}`);
+        uBOL_injectCSS(`${styleSheetSelectors.join(',')}{/*display:none!important;*/}`);
         styleSheetSelectors.length = 0;
     });
 };

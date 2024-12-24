@@ -244,6 +244,28 @@
       return targetUrl;
     }
 
+    const domParent = function (node) {
+      let checkNode = node;
+      while (checkNode && checkNode.nodeType === 1) {
+        //checkNode && console.log('CHECKING: '+checkNode.tagName, checkNode);
+        if (checkNode.tagName === 'HTML') {
+          return checkNode;
+        }
+        checkNode = checkNode.parentNode;
+      }
+      return node.parentNode; // return original parent
+    }
+
+    const addAdMixPlaylistMenu = function (img) {
+      let parent = domParent(img);
+      if (parent.parentNode == null) {
+        parent = img.parentNode;
+      }
+      let playlist_elem = document.createElement("img");
+      playlist_elem.src = browser.runtime.getURL("img/alert.png");
+      playlist_elem.style.position = "absolute";
+      parent.appendChild(playlist_elem)
+    }
 
     const createImageAd = function (el, src, targetUrl) {
       let wFallback = parseInt(el.getAttribute("width") || -1)
@@ -290,7 +312,10 @@
 
       if (ad) {
         logP('[PARSED] IMG-AD' + ad);
-        notifyAddon(ad);
+        let wasAdded = notifyAddon(ad);
+        if (wasAdded) {
+          addAdMixPlaylistMenu(el);
+        };
         return true;
       } else {
         warnP("Fail: Unable to create Ad", document.domain, targetUrl, src);

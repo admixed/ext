@@ -1511,6 +1511,9 @@ const adnauseam = (function () {
     const settings = await vAPI.storage.get(µb.userSettings);
     // start by grabbing user-settings, then calling initialize()
 
+    // ADMIX; automatically enable hiding ads to enable ad collection
+    // settings.hidingAds = true;
+
     // this for backwards compatibility only ---------------------
     const mapSz = Object.keys(settings.admap).length;
     if (!mapSz && µb.adnSettings && µb.adnSettings.admap) {// Sally: do we still need this?
@@ -1665,7 +1668,7 @@ const adnauseam = (function () {
     dnt.updateFilters();
 
     if (firstRun) {
-
+      // Admix: Disable ADN FirstRun page
       listsLoaded = true;
       let url = 'firstrun.html';
 

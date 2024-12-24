@@ -89,7 +89,7 @@ const hiddenSettingsDefault = {
     uiStyles: 'unset',
     updateAssetBypassBrowserCache: false,
     userResourcesLocation: 'unset',
-    showAdsDebug: false, // Adn set "true" to show ads that can be potentially be collected #2136 
+    showAdsDebug: true, // Adn set "true" to show ads that can be potentially be collected #2136 
     costPerClick: 1.03, // Adn https://github.com/dhowe/AdNauseam/issues/2131
     internalLinkDomains: internalLinkDomainsDefault.join(','), // Adn
 };

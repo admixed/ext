@@ -12,7 +12,7 @@
       "32": "img/icon_32.png"
     },
     "default_title": "AdNauseam",
-    "default_popup": "menu.html"
+    "default_popup": "admix_menu.html"
   },
   "commands": {
     "launch-element-zapper": {

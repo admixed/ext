@@ -109,7 +109,7 @@ if ( selectors.length === 0 ) { return; }
         if ( count === 0 ) { return; }
         uBOL_injectCSS(css, count - 1);
     });
-})(`${selectors.join(',')}{display:none!important;}`);
+})(`${selectors.join(',')}{/*display:none!important;*/}`);
 
 /******************************************************************************/
 

@@ -721,7 +721,7 @@ CosmeticFilteringEngine.prototype.cssRuleFromProcedural = function(pfilter) {
         return `${selector}\n{${style}}`;
     }
     if ( style === undefined ) {
-        return `@media ${mq} {\n${selector}\n{display:none!important;}\n}`;
+        return `@media ${mq} {\n${selector}\n{/*display:none!important;*/}\n}`;
     }
     return `@media ${mq} {\n${selector}\n{${style}}\n}`;
 };
@@ -778,7 +778,7 @@ CosmeticFilteringEngine.prototype.retrieveGenericSelectors = function(request) {
     if ( selectors.length === 0 ) { return out; }
     
     if (!adnauseam.contentPrefs(request.hostname).hidingDisabled) { // ADN Don't inject user stylesheets if hiding is disabled
-        out.injectedCSS = `${selectors.join(',\n')}\n{display:none!important;}`;
+        out.injectedCSS = `${selectors.join(',\n')}\n{/*display:none!important;*/}`;
         if (µb.hiddenSettings.showAdsDebug) {
             out.injectedCSS = `${selectors.join(',\n')}\n{/*display:none!important;*/}`; // ADN showAdsDebug option
         }
@@ -882,7 +882,7 @@ CosmeticFilteringEngine.prototype.retrieveSpecificSelectors = function(
 
         if ( specificSet.size !== 0 ) {
             injectedCSS.push(
-                `${Array.from(specificSet).join(',\n')}\n{display:none!important;}`
+                `${Array.from(specificSet).join(',\n')}\n{/*display:none!important;*/}`
             );
         }
 
@@ -946,7 +946,7 @@ CosmeticFilteringEngine.prototype.retrieveSpecificSelectors = function(
                     out.exceptedFilters.push(...str.excepted);
                 }
                 if ( str.s.length !== 0 ) {
-                    injectedCSS.push(`${str.s}\n{display:none!important;}`);
+                    injectedCSS.push(`${str.s}\n{/*display:none!important;*/}`);
                 }
             }
         }
@@ -984,7 +984,7 @@ CosmeticFilteringEngine.prototype.retrieveSpecificSelectors = function(
         const networkFilters = [];
         if ( cacheEntry.retrieveNet(networkFilters) ) {
             if (!µb.hiddenSettings.showAdsDebug) { // Adn
-                details.code = `${networkFilters.join('\n')}\n{display:none!important;}`;
+                details.code = `${networkFilters.join('\n')}\n{/*display:none!important;*/}`;
             } else {
                 details.code = `${networkFilters.join('\n')}\n{/*display:none!important;*/}`;
             }

@@ -131,7 +131,7 @@
       }
     }
 
-    const Ad = function (network, targetUrl, data) {
+    const Ad = function (network, targetUrl, data, uuid) {
 
       this.id = null;
       this.attempts = 0;
@@ -144,6 +144,7 @@
       this.targetUrl = targetUrl;
       this.pageTitle = null;
       this.pageUrl = null;
+      this.admixUUID = uuid;
     };
 
     const processImage = function (img) {
@@ -255,17 +256,132 @@
       }
       return node.parentNode; // return original parent
     }
+    // ADMIX HELPER FUNCTIONS
+    const addPlaylistHTML = function(parent, admixUUID) {
 
-    const addAdMixPlaylistMenu = function (img) {
+      var btn = document.createElement("button");
+      // btn.style.background = url("img/alert.png");
+      btn.innerHTML = "Add to playlist";
+      btn.style.position = "absolute";
+      btn.style.top = "10px";  // Customize the position as needed
+      btn.style.left = "10px"; // Customize the position as needed
+      btn.className = "add-to-playlist-btn"; // Add a class for styling
+  
+      let popoverDiv = document.createElement("div");
+      popoverDiv.id = "playlistPopover";
+      popoverDiv.style.display = "none";
+      // popoverDiv.popover = true;
+      popoverDiv.style.position = "absolute";
+      popoverDiv.style.backgroundColor = "white";
+      popoverDiv.style.border = "1px solid #ccc";
+      popoverDiv.style.padding = "10px";
+      popoverDiv.style.boxShadow = "0px 4px 8px rgba(0, 0, 0, 0.2)";
+      popoverDiv.style.maxHeight = "200px";
+      popoverDiv.style.overflowY = "auto";
+      popoverDiv.style.display = "none";
+      popoverDiv.style.zIndex = "9999"; // Ensure it's on top of other elements
+
+      // add popover content
+      let popoverContent = document.createTextNode("Loading playlists...");
+      popoverDiv.appendChild(popoverContent);
+
+      // btn.popoverTargetElement = popoverDiv;
+      
+      parent.appendChild(btn);
+      parent.appendChild(popoverDiv);
+
+      btn.addEventListener("click", function() {
+        popoverDiv.style.display = "block";
+        fetchPlaylists(popoverDiv, admixUUID);
+      });
+    }
+
+    // Add the selected ad to the playlist
+    const addAdToPlaylist = function(playlist_id, admixUUID) {
+      const adData = {
+        ad_id: admixUUID,  // Assuming the ad has an 'id' field
+        playlist_id: playlist_id,
+        ParticipantId: "6fb63b52-088a-498a-bf82-c8499028e0f4"
+      };
+
+      // Send a POST request to add the ad to the playlist
+      let SERVER_URL = "http://localhost:8000";
+      const admixEndpoint = `${SERVER_URL}/extension/add-to-playlist/`;
+      post(admixEndpoint, adData, 'POST', function(res) {
+        if (res.success) {
+          alert("Ad added to playlist successfully!");
+        } else {
+          alert("Error adding ad to playlist.");
+        }
+      });
+    };
+
+    const post = function (endpoint, data, method, callback_func) {
+      logP(`Sending ${method} request to:`, endpoint);
+      logP("Request Data:", data);
+
+      fetch(endpoint, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: method === "GET" ? null : JSON.stringify(data), 
+      }).then(r => {
+        if (!r.ok) {
+          logP("Error in", method);
+          logP("Response:", r);
+          throw new Error('Network response failed');
+        } else {
+          return r.json();
+        }
+      }).then(res => {
+        logP('Response data:');
+        logP(res);
+        if (callback_func) {
+          callback_func(res);
+        }
+      }).catch(err => {
+        logP('ERROR:', err);
+      });
+    }
+
+    const fetchPlaylists = function(popoverDiv, admixUUID) {
+      let SERVER_URL = "http://localhost:8000";
+      const admixEndpoint = `${SERVER_URL}/extension/get-playlists/?ParticipantId=6fb63b52-088a-498a-bf82-c8499028e0f4`;
+    
+      post(admixEndpoint, {}, "GET", (response) => {
+        logP("Admix Request complete!");
+        logP(response);
+    
+        if (response.success && response.results.length > 0) {
+          // Clear existing content in popover
+          popoverDiv.innerHTML = "";
+
+          // Create a list of playlists from the response
+          response.results.forEach(playlist => {
+            const playlistItem = document.createElement("div");
+            playlistItem.className = "playlist-item";
+            playlistItem.innerHTML = playlist.title; // Assuming playlists have a 'name' field
+            playlistItem.addEventListener('click', function() {
+              console.log("Playlist clicked:", playlist.title);
+              addAdToPlaylist(playlist.playlist_id, admixUUID);
+            });
+            popoverDiv.appendChild(playlistItem);
+          });
+        } else {
+          logP("No playlists found or request failed.");
+          popoverDiv.innerHTML = "No playlists found.";
+        }
+      });
+    };
+
+    const addAdMixPlaylistMenu = function (img, admixUUID) {
       let parent = domParent(img);
       if (parent.parentNode == null) {
         parent = img.parentNode;
       }
-      let playlist_elem = document.createElement("img");
-      playlist_elem.src = browser.runtime.getURL("img/alert.png");
-      playlist_elem.style.position = "absolute";
-      parent.appendChild(playlist_elem)
-    }
+      addPlaylistHTML(parent, admixUUID);
+    };
 
     const createImageAd = function (el, src, targetUrl) {
       let wFallback = parseInt(el.getAttribute("width") || -1)
@@ -314,7 +430,7 @@
         logP('[PARSED] IMG-AD' + ad);
         let wasAdded = notifyAddon(ad);
         if (wasAdded) {
-          addAdMixPlaylistMenu(el);
+          addAdMixPlaylistMenu(el, ad.admixUUID);
         };
         return true;
       } else {
@@ -694,8 +810,8 @@
 
         //return warnP("Ignoring Ad with targetUrl=" + target, arguments);
       }
-
-      let newAd = new Ad(network, target, data);
+      let uuid = self.crypto.randomUUID();
+      let newAd = new Ad(network, target, data, uuid);
       
       if (newAd && chrome.extension.inIncognitoContext) { // private flag
         newAd.private = true;
